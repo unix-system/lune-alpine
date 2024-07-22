@@ -18,7 +18,7 @@ jobs:
       version: ${{ steps.get_version.outputs.value }}
     steps:
       - name: Run sccache-cache
-        uses: mozilla-actions/sccache-action@v0.0.3
+        uses: mozilla-actions/sccache-action@v0.0.5
 
       - uses: actions/checkout@v4
         with:
