@@ -45,6 +45,12 @@ jobs:
           repository: 'lune-org/lune'
           ref: 'main'
 
+      - name: Install build tooling (x86_64-unknown-linux-musl)
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y musl-tools clang llvm musl-dev cmake gcc g++
+          sudo ln -s "/usr/bin/g++" "/usr/bin/musl-g++"
+
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -52,12 +58,6 @@ jobs:
 
       - name: Install Just
         uses: extractions/setup-just@v2
-
-      - name: Install build tooling (x86_64-unknown-linux-musl)
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y musl-tools clang llvm musl-dev cmake gcc g++
-          sudo ln -s "/usr/bin/g++" "/usr/bin/musl-g++"
 
       - name: Build binary
         run: just build --release --target x86_64-unknown-linux-musl
