@@ -45,12 +45,6 @@ jobs:
           repository: 'lune-org/lune'
           ref: 'main'
 
-      - name: Install build tooling (x86_64-unknown-linux-musl)
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y musl-tools clang llvm musl-dev cmake gcc g++
-          sudo ln -s "/usr/bin/g++" "/usr/bin/musl-g++"
-
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -59,8 +53,13 @@ jobs:
       - name: Install Just
         uses: extractions/setup-just@v2
 
-      - name: Build binary
-        run: just build --release --target x86_64-unknown-linux-musl
+      - name: Build cross-linked release
+        uses: addnab/docker-run-action@v3
+        with:
+            image: messense/rust-musl-cross:x86_64-musl
+            options: -v ${{ github.workspace }}:/home/rust/src
+            run: |
+                cargo build --release --target x86_64-unknown-linux-musl
 
       - name: Create release archive
         run: just zip-release x86_64-unknown-linux-musl
